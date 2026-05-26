@@ -46,7 +46,7 @@ export default function DashboardPage() {
     <div>
       <div className="mb-6">
         <h1 className="font-serif text-2xl font-bold text-primary-700">
-          Bienvenido, {user?.name?.split(' ')[0]} 👋
+          Bienvenido, {user?.name?.split(' ')[0]}
         </h1>
         <p className="text-slate-500 text-sm mt-1">
           {format(new Date(), "EEEE, d 'de' MMMM yyyy", { locale: es })}

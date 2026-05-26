@@ -46,7 +46,7 @@ export default function Layout() {
               <Award className="text-accent-400" size={22} />
               <span className="font-serif text-sm font-semibold leading-tight">
                 Constancias<br />
-                <span className="text-accent-400">& Reconocimientos</span>
+                <span className="text-accent-400">y Reconocimientos</span>
               </span>
             </div>
           )}
