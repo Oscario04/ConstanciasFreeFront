@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { eventsApi, requestsApi } from '@/services/api'
 import { useAuthStore } from '@/store/authStore'
+import { normalizeRole } from '@/constants/roles'
 import { Plus, Calendar, MapPin, Users } from 'lucide-react'
 import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
@@ -24,7 +25,7 @@ const STATUS_COLORS: Record<string, string> = {
 
 export default function EventsPage() {
   const user = useAuthStore((s) => s.user)
-  const isAdmin = ['admin', 'organizer'].includes(user?.role || '')
+  const isAdmin = ['admin', 'organizer'].includes(normalizeRole(user?.role))
   const [showCreate, setShowCreate] = useState(false)
   const [filter, setFilter] = useState('')
   const qc = useQueryClient()
@@ -105,7 +106,7 @@ export default function EventsPage() {
               </a>
               {event.status === 'published' && !isAdmin && (
                 <button
-                  onClick={() => requestMut.mutate({ eventId: event.id, role: 'attendee' })}
+                  onClick={() => requestMut.mutate({ eventId: event.id, role: 'assistant' })}
                   disabled={requestMut.isPending}
                   className="btn-primary text-xs py-1.5 flex-1"
                 >

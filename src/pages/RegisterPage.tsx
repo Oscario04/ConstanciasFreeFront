@@ -3,20 +3,32 @@ import { useNavigate, Link } from 'react-router-dom'
 import { authApi } from '@/services/api'
 import toast from 'react-hot-toast'
 import { Award } from 'lucide-react'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { registerSchema, type RegisterFormValues } from '@/schemas/authSchemas'
 
 export default function RegisterPage() {
-  const [form, setForm] = useState({ name: '', email: '', password: '', role: 'attendee' })
   const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
 
-  const set = (field: string) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) =>
-    setForm((f) => ({ ...f, [field]: e.target.value }))
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<RegisterFormValues>({
+    resolver: zodResolver(registerSchema),
+    defaultValues: {
+      name: '',
+      email: '',
+      password: '',
+      role: 'assistant',
+    },
+  })
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+  const onSubmit = async (values: RegisterFormValues) => {
     setLoading(true)
     try {
-      await authApi.register(form)
+      await authApi.register(values)
       toast.success('Cuenta creada. Por favor inicia sesión.')
       navigate('/login')
     } catch (err: any) {
@@ -37,26 +49,29 @@ export default function RegisterPage() {
           <p className="text-slate-500 text-sm mt-1">Únete a la plataforma</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div>
             <label className="label">Nombre completo</label>
-            <input type="text" className="input" value={form.name} onChange={set('name')} required />
+            <input type="text" className="input" {...register('name')} />
+            {errors.name && <p className="mt-1 text-xs text-red-600">{errors.name.message}</p>}
           </div>
           <div>
             <label className="label">Correo electrónico</label>
-            <input type="email" className="input" value={form.email} onChange={set('email')} required />
+            <input type="email" className="input" {...register('email')} />
+            {errors.email && <p className="mt-1 text-xs text-red-600">{errors.email.message}</p>}
           </div>
           <div>
             <label className="label">Contraseña</label>
-            <input type="password" className="input" value={form.password} onChange={set('password')} minLength={6} required />
+            <input type="password" className="input" {...register('password')} />
+            {errors.password && <p className="mt-1 text-xs text-red-600">{errors.password.message}</p>}
           </div>
           <div>
             <label className="label">Tipo de usuario</label>
-            <select className="input" value={form.role} onChange={set('role')}>
-              <option value="attendee">Participante / Oyente</option>
-              <option value="speaker">Ponente / Expositor</option>
-              <option value="staff">Staff</option>
+            <select className="input" {...register('role')}>
+              <option value="assistant">Asistente</option>
+              <option value="organizer">Organizador</option>
             </select>
+            {errors.role && <p className="mt-1 text-xs text-red-600">{errors.role.message}</p>}
           </div>
           <button type="submit" disabled={loading} className="btn-primary w-full py-2.5 mt-2">
             {loading ? 'Creando cuenta...' : 'Registrarse'}

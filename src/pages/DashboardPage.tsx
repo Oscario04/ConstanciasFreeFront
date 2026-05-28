@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import { statsApi, eventsApi } from '@/services/api'
 import { useAuthStore } from '@/store/authStore'
+import { normalizeRole } from '@/constants/roles'
 import { Calendar, FileText, Users, ClipboardList, CheckCircle, Clock, Award } from 'lucide-react'
 import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
@@ -22,7 +23,7 @@ function StatCard({ title, value, icon: Icon, color }: { title: string; value: n
 
 export default function DashboardPage() {
   const user = useAuthStore((s) => s.user)
-  const isAdmin = user?.role === 'admin' || user?.role === 'organizer'
+  const isAdmin = ['admin', 'organizer'].includes(normalizeRole(user?.role))
 
   const { data: stats } = useQuery<DashboardStats>({
     queryKey: ['stats'],

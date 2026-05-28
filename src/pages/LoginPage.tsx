@@ -4,26 +4,32 @@ import { useAuthStore } from '@/store/authStore'
 import { authApi } from '@/services/api'
 import toast from 'react-hot-toast'
 import { Award, Eye, EyeOff } from 'lucide-react'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { loginSchema, type LoginFormValues } from '@/schemas/authSchemas'
 
 export default function LoginPage() {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
   const [showPw, setShowPw] = useState(false)
-  const [loading, setLoading] = useState(false)
   const { login } = useAuthStore()
   const navigate = useNavigate()
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setLoading(true)
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<LoginFormValues>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: { email: '', password: '' },
+    mode: 'onBlur',
+  })
+
+  const onSubmit = async (values: LoginFormValues) => {
     try {
-      const { data } = await authApi.login(email, password)
-      login(data.user, data.access_token)
+      const { data } = await authApi.login(values.email, values.password)
+      login(data.user, data.access_token, data.refresh_token)
       navigate('/dashboard')
     } catch (err: any) {
       toast.error(err.response?.data?.detail || 'Credenciales incorrectas')
-    } finally {
-      setLoading(false)
     }
   }
 
@@ -51,17 +57,16 @@ export default function LoginPage() {
             <p className="text-slate-500 mt-1">Inicia sesión en tu cuenta</p>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-5">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
             <div>
               <label className="label">Correo electrónico</label>
               <input
                 type="email"
                 className="input"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                {...register('email')}
                 placeholder="usuario@correo.com"
-                required
               />
+              {errors.email && <p className="mt-1 text-xs text-red-600">{errors.email.message}</p>}
             </div>
 
             <div>
@@ -70,10 +75,8 @@ export default function LoginPage() {
                 <input
                   type={showPw ? 'text' : 'password'}
                   className="input pr-10"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  {...register('password')}
                   placeholder="••••••••"
-                  required
                 />
                 <button
                   type="button"
@@ -83,10 +86,16 @@ export default function LoginPage() {
                   {showPw ? <EyeOff size={16} /> : <Eye size={16} />}
                 </button>
               </div>
+              {errors.password && <p className="mt-1 text-xs text-red-600">{errors.password.message}</p>}
+              <div className="mt-2 text-right">
+                <Link to="/forgot-password" className="text-xs font-medium text-primary-600 hover:underline">
+                  ¿Olvidaste tu contraseña?
+                </Link>
+              </div>
             </div>
 
-            <button type="submit" disabled={loading} className="btn-primary w-full py-2.5">
-              {loading ? 'Iniciando sesión...' : 'Iniciar sesión'}
+            <button type="submit" disabled={isSubmitting} className="btn-primary w-full py-2.5">
+              {isSubmitting ? 'Iniciando sesión...' : 'Iniciar sesión'}
             </button>
           </form>
 

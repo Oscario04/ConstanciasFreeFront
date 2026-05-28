@@ -1,4 +1,4 @@
-export type UserRole = 'admin' | 'organizer' | 'speaker' | 'attendee' | 'staff'
+export type UserRole = 'admin' | 'organizer' | 'assistant' | 'asistente' | 'speaker' | 'attendee' | 'staff'
 export type UserStatus = 'active' | 'inactive' | 'suspended'
 
 export interface User {
@@ -33,7 +33,7 @@ export interface Event {
 }
 
 export type RequestStatus = 'pending' | 'approved' | 'rejected'
-export type ParticipantRole = 'speaker' | 'attendee' | 'staff' | 'organizer'
+export type ParticipantRole = 'assistant' | 'speaker' | 'attendee' | 'staff' | 'organizer'
 
 export interface ParticipationRequest {
   id: string

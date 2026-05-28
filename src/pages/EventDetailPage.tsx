@@ -2,6 +2,7 @@ import { useParams } from 'react-router-dom'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { eventsApi, requestsApi, documentsApi, statsApi } from '@/services/api'
 import { useAuthStore } from '@/store/authStore'
+import { normalizeRole } from '@/constants/roles'
 import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
 import { Calendar, MapPin, Users, Clock, Award, CheckCircle, XCircle } from 'lucide-react'
@@ -18,7 +19,7 @@ const STATUS_LABEL: Record<string, string> = {
 export default function EventDetailPage() {
   const { id } = useParams<{ id: string }>()
   const user = useAuthStore((s) => s.user)
-  const isAdmin = ['admin', 'organizer'].includes(user?.role || '')
+  const isAdmin = ['admin', 'organizer'].includes(normalizeRole(user?.role))
   const qc = useQueryClient()
 
   const { data: event, isLoading } = useQuery({
@@ -166,7 +167,7 @@ export default function EventDetailPage() {
             <div className="card">
               <h3 className="font-semibold text-slate-700 mb-3">Participar</h3>
               <div className="space-y-2">
-                {['attendee', 'speaker', 'staff'].map((role) => (
+                {['assistant', 'speaker', 'staff'].map((role) => (
                   <button key={role} onClick={() => requestMut.mutate(role)}
                     disabled={requestMut.isPending}
                     className="btn-primary w-full text-sm capitalize">
