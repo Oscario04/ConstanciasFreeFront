@@ -15,7 +15,7 @@ export default function CertificatesPage() {
 
   const kpis = documents
     ? [
-        { label: 'Total documentos', value: documents.length },
+        { label: 'Mis documentos', value: documents.length },
         { label: 'Activos', value: documents.filter((doc: any) => doc.status === 'active').length },
         { label: 'Revocados', value: documents.filter((doc: any) => doc.status === 'revoked').length },
         { label: 'Archivados', value: documents.filter((doc: any) => doc.status === 'archived').length },
@@ -31,8 +31,8 @@ export default function CertificatesPage() {
       {!documents?.length && (
         <EmptyState
           icon={BadgeCheck}
-          title="Sin documentos"
-          description="No hay constancias o reconocimientos en base de datos para mostrar en este modulo."
+          title="Sin mis documentos"
+          description="No tienes constancias o reconocimientos asignados en este momento."
         />
       )}
     </ModulePageShell>

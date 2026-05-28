@@ -58,6 +58,8 @@ export interface Document {
   verification_code: string
   public_url: string
   pdf_url: string
+  preview_url?: string
+  download_url?: string
   issued_at: string
   expires_at?: string
   metadata: {

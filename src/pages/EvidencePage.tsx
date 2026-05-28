@@ -18,6 +18,8 @@ type EvidenceItem = {
   size?: number
   url?: string
   file_url?: string
+  preview_url?: string
+  download_url?: string
   created_at?: string
   uploaded_at?: string
 }
@@ -28,8 +30,14 @@ function getDisplayName(item: EvidenceItem) {
   return item.original_name || item.filename || item.file_name || 'archivo'
 }
 
-function getFileUrl(item: EvidenceItem) {
-  return item.url || item.file_url || '#'
+// Devuelve la URL para descarga directa (endpoint download)
+function getDownloadUrl(item: EvidenceItem) {
+  const publicUrl = item.download_url || item.url || item.file_url
+  if (publicUrl) {
+    return publicUrl
+  }
+
+  return '#'
 }
 
 function toSizeLabel(bytes?: number) {
@@ -270,12 +278,11 @@ export default function EvidencePage() {
                     <td className="px-4 py-3">
                       <div className="flex gap-2">
                         <a
-                          className="btn-secondary px-3 py-1.5 text-xs"
-                          href={getFileUrl(item)}
-                          target="_blank"
-                          rel="noreferrer"
+                          className="btn-primary px-3 py-1.5 text-xs"
+                          href={getDownloadUrl(item)}
+                          download
                         >
-                          Ver
+                          Descargar
                         </a>
                         <button
                           type="button"

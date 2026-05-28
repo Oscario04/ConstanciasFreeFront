@@ -12,9 +12,7 @@ import VerifyPage from '@/pages/VerifyPage'
 import AttendancePage from '@/pages/AttendancePage'
 import ForgotPasswordPage from '@/pages/ForgotPasswordPage'
 import ReportsPage from '@/pages/ReportsPage'
-import AuditPage from '@/pages/AuditPage'
 import TemplatesPage from '@/pages/TemplatesPage'
-import CertificatesPage from '@/pages/CertificatesPage'
 import EvidencePage from '@/pages/EvidencePage'
 import NotificationsPage from '@/pages/NotificationsPage'
 import ProfilePage from '@/pages/ProfilePage'
@@ -61,14 +59,6 @@ export default function AppRouter() {
             }
           />
           <Route
-            path="certificates"
-            element={
-              <RoleGuard allowedRoles={['admin', 'organizer']}>
-                <CertificatesPage />
-              </RoleGuard>
-            }
-          />
-          <Route
             path="templates"
             element={
               <RoleGuard allowedRoles={['admin', 'organizer']}>
@@ -97,14 +87,6 @@ export default function AppRouter() {
             element={
               <RoleGuard allowedRoles={['admin']}>
                 <UsersPage />
-              </RoleGuard>
-            }
-          />
-          <Route
-            path="audit"
-            element={
-              <RoleGuard allowedRoles={['admin']}>
-                <AuditPage />
               </RoleGuard>
             }
           />

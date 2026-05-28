@@ -16,6 +16,23 @@ const STATUS_LABEL: Record<string, string> = {
   pending: 'Pendiente', approved: 'Aprobada', rejected: 'Rechazada',
 }
 
+function getRequesterLabel(req: any) {
+  const firstNonEmpty = (...values: Array<unknown>) =>
+    values.find((value) => typeof value === 'string' && value.trim().length > 0) as string | undefined
+
+  return (
+    firstNonEmpty(
+      req.user_name,
+      req.userName,
+      req.user?.name,
+      req.name,
+      req.user_email,
+      req.userEmail,
+      req.user?.email,
+    ) || 'Usuario'
+  )
+}
+
 export default function EventDetailPage() {
   const { id } = useParams<{ id: string }>()
   const user = useAuthStore((s) => s.user)
@@ -125,7 +142,7 @@ export default function EventDetailPage() {
                   <div key={req.id} className="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
                     <div>
                       <span className={STATUS_BADGE[req.status]}>{STATUS_LABEL[req.status]}</span>
-                      <p className="text-sm font-medium text-slate-700 mt-1">User: {req.user_id.slice(-6)}</p>
+                      <p className="text-sm font-medium text-slate-700 mt-1">Usuario: {getRequesterLabel(req)}</p>
                       <p className="text-xs text-slate-400 capitalize">{req.requested_role}</p>
                     </div>
                     <div className="flex gap-2">
